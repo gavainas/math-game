@@ -1,7 +1,7 @@
 // Mapa camino del mundo (DESIGN.md 8): nodos en zigzag, sin texto. Flor con
 // estrellas = completado, brote pulsando = el que sigue, punto = bloqueado.
 
-import { nivelesDeMundo, puedeJugar, siguienteNivel } from '../engine';
+import { nivelesDeMundo } from '../engine';
 import type { Mundo, Nivel, Progreso } from '../engine';
 
 const ICONOS: Record<Mundo, { mundo: string; completado: string; proximo: string }> = {
@@ -29,7 +29,10 @@ export default function MapaMundo({
   alVolver,
   modoPrueba = false,
 }: Props) {
-  const proximo = siguienteNivel(niveles, progreso);
+  // La progresión interna del mundo es lineal e independiente: el acceso al
+  // mundo ya lo decidió el selector.
+  const delMundo = nivelesDeMundo(niveles, mundo);
+  const proximo = delMundo.find((nivel) => !progreso.nivelesCompletados[nivel.id]);
   const iconos = ICONOS[mundo];
 
   return (
@@ -39,10 +42,10 @@ export default function MapaMundo({
       </button>
       <div className="mapa__mundo">{iconos.mundo}</div>
       <div className="mapa__camino">
-        {nivelesDeMundo(niveles, mundo).map((nivel, i) => {
+        {delMundo.map((nivel, i) => {
           const completado = progreso.nivelesCompletados[nivel.id];
           const esProximo = proximo?.id === nivel.id;
-          const jugable = modoPrueba || puedeJugar(nivel, niveles, progreso);
+          const jugable = modoPrueba || Boolean(completado) || esProximo;
           const clase = completado
             ? 'nodo nodo--completado'
             : esProximo

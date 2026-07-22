@@ -1,8 +1,10 @@
 // Selector de mundos: se desbloquean en orden (DESIGN.md 2). Sin texto:
-// ícono grande, candado para lo que falta.
+// ícono grande, candado para lo que falta, obrador para lo no construido.
+// Mientras un mundo intermedio no esté construido (hoy: fracciones), el
+// desbloqueo salta al siguiente construido.
 
-import { ORDEN_MUNDOS, estaDesbloqueado } from '../engine';
-import type { Mundo, Progreso } from '../engine';
+import { ORDEN_MUNDOS, mundoCompleto } from '../engine';
+import type { Mundo, Nivel, Progreso } from '../engine';
 
 const ICONOS: Record<Mundo, string> = {
   multiplicacion: '🌻',
@@ -11,22 +13,28 @@ const ICONOS: Record<Mundo, string> = {
   ecuaciones: '⚖️',
 };
 
-// Fracciones y ecuaciones todavía no tienen niveles: se muestran como "en
-// construcción" aunque estén desbloqueados.
-const CONSTRUIDOS: Mundo[] = ['multiplicacion', 'division'];
+const CONSTRUIDOS: Mundo[] = ['multiplicacion', 'division', 'ecuaciones'];
 
 type Props = {
+  niveles: Nivel[];
   progreso: Progreso;
   modoPrueba: boolean;
   alElegir: (mundo: Mundo) => void;
 };
 
-export default function SelectorMundos({ progreso, modoPrueba, alElegir }: Props) {
+export default function SelectorMundos({ niveles, progreso, modoPrueba, alElegir }: Props) {
+  const estaAbierto = (mundo: Mundo): boolean => {
+    if (!CONSTRUIDOS.includes(mundo)) return false;
+    if (modoPrueba) return true;
+    const previos = CONSTRUIDOS.slice(0, CONSTRUIDOS.indexOf(mundo));
+    return previos.every((previo) => mundoCompleto(niveles, previo, progreso));
+  };
+
   return (
     <div className="mundos">
       {ORDEN_MUNDOS.map((mundo) => {
         const construido = CONSTRUIDOS.includes(mundo);
-        const abierto = construido && (modoPrueba || estaDesbloqueado(mundo, progreso));
+        const abierto = estaAbierto(mundo);
         return (
           <button
             key={mundo}

@@ -64,8 +64,11 @@ paso, el orden de sub-ítems es sugerido.
 
 ## Paso 6: Mundo 4 (Ecuaciones)
 
-- [ ] Balanza mágica, de dibujos a notación real (DESIGN.md 6), reusando lo
-      aprendido en Mundo 1 para 2x = 10.
+- [x] Balanza mágica, de dibujos a notación real (DESIGN.md 6): quitar en
+      espejo, restar números, repartir cofres (2x = 10 usa el Mundo 2) y
+      combinadas (2x + 3 = 11) con la ecuación simplificándose en vivo.
+      Se adelantó antes que Fracciones a pedido; el desbloqueo saltea los
+      mundos no construidos.
 - [ ] Boss "El Cofre Final" + evolución final de la mascota (etapa 4).
 
 ## Paso 7: Arte final + mascota (Higgsfield / Claude Design)

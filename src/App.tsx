@@ -8,20 +8,26 @@ import {
   cargarProgreso,
   completarNivel,
   guardarProgreso,
-  siguienteNivel,
+  nivelesDeMundo,
 } from './engine';
 import type { Mundo, Nivel, Progreso } from './engine';
 import { nivelesMultiplicacion } from './data/multiplicacion';
 import { nivelesDivision } from './data/division';
+import { nivelesEcuaciones } from './data/ecuaciones';
 import { conectarSonidos } from './components/sonidos';
 import Mascota from './components/Mascota';
 import MapaMundo from './components/MapaMundo';
 import SelectorMundos from './components/SelectorMundos';
 import PantallaNivel from './worlds/multiplicacion/PantallaNivel';
 import PantallaReparto from './worlds/division/PantallaReparto';
+import PantallaBalanza from './worlds/ecuaciones/PantallaBalanza';
 import './App.css';
 
-const TODOS_LOS_NIVELES: Nivel[] = [...nivelesMultiplicacion, ...nivelesDivision];
+const TODOS_LOS_NIVELES: Nivel[] = [
+  ...nivelesMultiplicacion,
+  ...nivelesDivision,
+  ...nivelesEcuaciones,
+];
 
 type Pantalla =
   | { vista: 'mundos' }
@@ -64,7 +70,11 @@ export default function App() {
     setProgreso(nuevo);
   };
 
-  const proximo = siguienteNivel(TODOS_LOS_NIVELES, progreso);
+  // El botón ➜ del final de nivel avanza dentro del mismo mundo.
+  const siguienteEnMundo = (mundo: Mundo): Nivel | null =>
+    nivelesDeMundo(TODOS_LOS_NIVELES, mundo).find(
+      (nivel) => !progreso.nivelesCompletados[nivel.id],
+    ) ?? null;
   const abrirNivel = (nivel: Nivel) => setPantalla({ vista: 'nivel', nivel });
 
   return (
@@ -75,6 +85,7 @@ export default function App() {
 
       {pantalla.vista === 'mundos' && (
         <SelectorMundos
+          niveles={TODOS_LOS_NIVELES}
           progreso={progreso}
           modoPrueba={MODO_PRUEBA}
           alElegir={(mundo) => setPantalla({ vista: 'mapa', mundo })}
@@ -93,21 +104,18 @@ export default function App() {
       )}
 
       {pantalla.vista === 'nivel' &&
-        (pantalla.nivel.tipo === 'reparto' ? (
-          <PantallaReparto
-            key={pantalla.nivel.id}
-            nivel={pantalla.nivel}
-            alVolver={() => setPantalla({ vista: 'mapa', mundo: pantalla.nivel.mundo })}
-            alSiguiente={proximo ? () => abrirNivel(proximo) : null}
-          />
-        ) : (
-          <PantallaNivel
-            key={pantalla.nivel.id}
-            nivel={pantalla.nivel}
-            alVolver={() => setPantalla({ vista: 'mapa', mundo: pantalla.nivel.mundo })}
-            alSiguiente={proximo ? () => abrirNivel(proximo) : null}
-          />
-        ))}
+        (() => {
+          const { nivel } = pantalla;
+          const proximo = siguienteEnMundo(nivel.mundo);
+          const props = {
+            nivel,
+            alVolver: () => setPantalla({ vista: 'mapa', mundo: nivel.mundo }),
+            alSiguiente: proximo ? () => abrirNivel(proximo) : null,
+          };
+          if (nivel.tipo === 'reparto') return <PantallaReparto key={nivel.id} {...props} />;
+          if (nivel.tipo === 'balanza') return <PantallaBalanza key={nivel.id} {...props} />;
+          return <PantallaNivel key={nivel.id} {...props} />;
+        })()}
 
       <Mascota />
     </main>
