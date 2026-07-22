@@ -10,18 +10,18 @@ paso, el orden de sub-ítems es sugerido.
 
 ## Paso 1: Motor genérico de niveles (sin arte final)
 
-- [ ] Tipos base: `Mundo`, `TipoNivel`, `Nivel`, `ObjetivoNivel` como unión
+- [x] Tipos base: `Mundo`, `TipoNivel`, `Nivel`, `ObjetivoNivel` como unión
       discriminada, `Pista` (GAMEFEEL.md 11.1). Niveles como TS tipado en `/src/data`.
-- [ ] Motor de validación de niveles y progresión (desbloqueo lineal de mundos,
+- [x] Motor de validación de niveles y progresión (desbloqueo lineal de mundos,
       replay dentro del mundo, repetición espaciada, niveles espejo — DESIGN.md 7).
-- [ ] Guardado en LocalStorage: schema `Progreso` de GAMEFEEL.md 11.3, una sola
+- [x] Guardado en LocalStorage: schema `Progreso` de GAMEFEEL.md 11.3, una sola
       key serializada, guardar en cada `puzzle_resuelto`, `version` para migraciones.
-- [ ] **Sistema de eventos de feedback** (GAMEFEEL.md 11.2): el engine emite
+- [x] **Sistema de eventos de feedback** (GAMEFEEL.md 11.2): el engine emite
       `EventoJuego`, la presentación (animación, sonido, mascota) consume.
-- [ ] **Drag & drop con spring y snap magnético** (GAMEFEEL.md 11.4 punto 1 y
+- [x] **Drag & drop con spring y snap magnético** (GAMEFEEL.md 11.4 punto 1 y
       tabla de juice sección 6): agarrar, arrastrar con lag elástico, snap al
       slot válido, vuelta flotante al origen si es inválido. Es el 70% del feel.
-- [ ] Detección de inactividad (30/60 seg) y de 3 intentos iguales, emitidas
+- [x] Detección de inactividad (30/60 seg) y de 3 intentos iguales, emitidas
       como eventos (`inactividad`, `intentos_repetidos`).
 
 ## Paso 2: Mundo 1 completo (Multiplicación), arte placeholder

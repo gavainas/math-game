@@ -18,7 +18,8 @@ para un chico de 8-9 años. Sin texto instructivo: se aprende manipulando.
 - **Persistencia:** solo LocalStorage, una sola key serializada,
   con el schema `Progreso` de GAMEFEEL.md 11.3.
 - **Niveles:** data tipada en TS dentro de `/src/data` (no JSON suelto).
-- Comandos: `npm run dev` | `npm run build` (tsc + vite) | `npm run lint` (oxlint).
+- Comandos: `npm run dev` | `npm run build` (tsc + vite) | `npm run lint`
+  (oxlint) | `npm run test` (vitest).
 
 ## Estructura (DESIGN.md sección 10)
 
