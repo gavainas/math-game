@@ -45,9 +45,40 @@
   padding: 24px 0 120px;
 }
 
+.mapa__cabecera {
+  display: flex;
+  align-items: flex-end;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
 .mapa__mundo {
   font-size: 3rem;
-  margin-bottom: 18px;
+}
+
+.mundos__benja {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 4px;
+}
+
+/* Botón de ayuda: la cara de Benja asomando en un círculo, flotante abajo a
+   la izquierda (opuesto a Benja mascota) */
+.boton-ayuda {
+  position: fixed;
+  left: 14px;
+  bottom: 16px;
+  z-index: 26;
+  width: 58px;
+  height: 58px;
+  overflow: hidden;
+  padding-top: 6px;
+  align-items: start;
+}
+
+.boton-ayuda img {
+  pointer-events: none;
 }
 
 .mapa__camino {

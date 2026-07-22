@@ -5,6 +5,7 @@
 
 import { ORDEN_MUNDOS, mundoCompleto } from '../engine';
 import type { Mundo, Nivel, Progreso } from '../engine';
+import Benja from './Benja';
 
 const ICONOS: Record<Mundo, string> = {
   multiplicacion: '🌻',
@@ -32,6 +33,9 @@ export default function SelectorMundos({ niveles, progreso, modoPrueba, alElegir
 
   return (
     <div className="mundos">
+      <div className="mundos__benja">
+        <Benja expresion="feliz" ancho={110} />
+      </div>
       {ORDEN_MUNDOS.map((mundo) => {
         const construido = CONSTRUIDOS.includes(mundo);
         const abierto = estaAbierto(mundo);

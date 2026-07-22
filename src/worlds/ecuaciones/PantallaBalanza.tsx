@@ -10,6 +10,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { busJuego, crearDetectorInactividad, crearSesionNivel } from '../../engine';
+import Benja from '../../components/Benja';
 import type { Estrellas, Nivel, SesionNivel, TerminoBalanza } from '../../engine';
 import { caracteristicasEcuaciones } from '../../data/ecuaciones';
 
@@ -36,9 +37,10 @@ type Props = {
   nivel: Nivel;
   alVolver: () => void;
   alSiguiente: (() => void) | null;
+  alAyuda: () => void;
 };
 
-export default function PantallaBalanza({ nivel, alVolver, alSiguiente }: Props) {
+export default function PantallaBalanza({ nivel, alVolver, alSiguiente, alAyuda }: Props) {
   const objetivo = nivel.tipo === 'balanza' ? nivel.objetivo : null;
   const { mostrarNotacion } = caracteristicasEcuaciones(nivel.id);
 
@@ -182,7 +184,14 @@ export default function PantallaBalanza({ nivel, alVolver, alSiguiente }: Props)
             </span>
           )}
         </div>
-        <span />
+        <button
+          type="button"
+          className="boton-redondo boton-ayuda"
+          onPointerDown={(evento) => evento.stopPropagation()}
+          onClick={alAyuda}
+        >
+          <Benja expresion="piola" ancho={44} />
+        </button>
       </header>
 
       <div className={`balanza${fase !== 'jugando' ? ' balanza--resuelta' : ''}`}>
@@ -242,6 +251,7 @@ export default function PantallaBalanza({ nivel, alVolver, alSiguiente }: Props)
 
       {fase === 'final' && (
         <div className="nivel__final">
+          <Benja expresion="feliz" ancho={96} />
           <div className="nivel__final-estrellas">{'⭐'.repeat(estrellas ?? 1)}</div>
           <div className="nivel__final-total">
             {mostrarNotacion ? `x = ${resumenRespuesta}` : `🎁 = ${resumenRespuesta}`}

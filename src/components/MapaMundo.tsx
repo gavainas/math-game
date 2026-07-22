@@ -3,6 +3,7 @@
 
 import { nivelesDeMundo } from '../engine';
 import type { Mundo, Nivel, Progreso } from '../engine';
+import Benja from './Benja';
 
 const ICONOS: Record<Mundo, { mundo: string; completado: string; proximo: string }> = {
   multiplicacion: { mundo: '🌻', completado: '🌼', proximo: '🌱' },
@@ -40,7 +41,10 @@ export default function MapaMundo({
       <button type="button" className="boton-redondo mapa__volver" onClick={alVolver}>
         🏠
       </button>
-      <div className="mapa__mundo">{iconos.mundo}</div>
+      <div className="mapa__cabecera">
+        <Benja expresion="piola" ancho={62} />
+        <span className="mapa__mundo">{iconos.mundo}</span>
+      </div>
       <div className="mapa__camino">
         {delMundo.map((nivel, i) => {
           const completado = progreso.nivelesCompletados[nivel.id];

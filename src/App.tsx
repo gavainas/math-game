@@ -15,7 +15,8 @@ import { nivelesMultiplicacion } from './data/multiplicacion';
 import { nivelesDivision } from './data/division';
 import { nivelesEcuaciones } from './data/ecuaciones';
 import { conectarSonidos } from './components/sonidos';
-import { CARTELES_BENJA, idBase } from './data/carteles';
+import { explicacionDeNivel } from './data/carteles';
+import type { Explicacion } from './data/carteles';
 import Mascota from './components/Mascota';
 import MapaMundo from './components/MapaMundo';
 import SelectorMundos from './components/SelectorMundos';
@@ -46,7 +47,7 @@ export default function App() {
   const [pantalla, setPantalla] = useState<Pantalla>(() =>
     cargarProgreso().introVista ? { vista: 'mundos' } : { vista: 'intro' },
   );
-  const [cartel, setCartel] = useState<string | null>(null); // id base del nivel
+  const [cartel, setCartel] = useState<Explicacion | null>(null);
 
   const progresoRef = useRef(progreso);
   progresoRef.current = progreso;
@@ -85,17 +86,22 @@ export default function App() {
 
   const abrirNivel = (nivel: Nivel) => {
     setPantalla({ vista: 'nivel', nivel });
-    const base = idBase(nivel.id);
-    if (CARTELES_BENJA[base] && !(progreso.cartelesVistos ?? []).includes(base)) {
-      setCartel(base);
+    const explicacion = explicacionDeNivel(nivel);
+    if (!(progreso.cartelesVistos ?? []).includes(explicacion.clave)) {
+      setCartel(explicacion);
     }
   };
 
+  // El botón con la cara de Benja en cada nivel reabre la explicación.
+  const pedirAyuda = () => {
+    if (pantalla.vista === 'nivel') setCartel(explicacionDeNivel(pantalla.nivel));
+  };
+
   const cerrarCartel = () => {
-    if (cartel !== null) {
+    if (cartel !== null && !(progreso.cartelesVistos ?? []).includes(cartel.clave)) {
       const nuevo = {
         ...progreso,
-        cartelesVistos: [...(progreso.cartelesVistos ?? []), cartel],
+        cartelesVistos: [...(progreso.cartelesVistos ?? []), cartel.clave],
       };
       guardarProgreso(nuevo);
       setProgreso(nuevo);
@@ -161,6 +167,7 @@ export default function App() {
             nivel,
             alVolver: () => setPantalla({ vista: 'mapa', mundo: nivel.mundo }),
             alSiguiente: proximo ? () => abrirNivel(proximo) : null,
+            alAyuda: pedirAyuda,
           };
           if (nivel.tipo === 'reparto') return <PantallaReparto key={nivel.id} {...props} />;
           if (nivel.tipo === 'balanza') return <PantallaBalanza key={nivel.id} {...props} />;
@@ -168,7 +175,7 @@ export default function App() {
         })()}
 
       {pantalla.vista === 'nivel' && cartel !== null && (
-        <CartelBenja texto={CARTELES_BENJA[cartel]} alCerrar={cerrarCartel} />
+        <CartelBenja texto={cartel.texto} alCerrar={cerrarCartel} />
       )}
 
       {pantalla.vista !== 'intro' && <Mascota />}

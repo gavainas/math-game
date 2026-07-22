@@ -15,6 +15,7 @@ import {
   useArrastre,
   useSlot,
 } from '../../engine';
+import Benja from '../../components/Benja';
 import type { Estrellas, Nivel, ResultadoSoltar, SesionNivel } from '../../engine';
 import { caracteristicasNivel, opcionesPrediccion } from '../../data/multiplicacion';
 
@@ -109,9 +110,10 @@ type Props = {
   nivel: Nivel;
   alVolver: () => void;
   alSiguiente: (() => void) | null;
+  alAyuda: () => void;
 };
 
-export default function PantallaNivel({ nivel, alVolver, alSiguiente }: Props) {
+export default function PantallaNivel({ nivel, alVolver, alSiguiente, alAyuda }: Props) {
   const objetivo = nivel.tipo === 'grilla' ? nivel.objetivo : null;
   const { mostrarTotal, mostrarNotacion, campoLibre } = caracteristicasNivel(nivel.id);
   const modo =
@@ -287,7 +289,14 @@ export default function PantallaNivel({ nivel, alVolver, alSiguiente }: Props) {
             <span className="nivel__contador">{plantadas}</span>
           )}
         </div>
-        <span />
+        <button
+          type="button"
+          className="boton-redondo boton-ayuda"
+          onPointerDown={(evento) => evento.stopPropagation()}
+          onClick={alAyuda}
+        >
+          <Benja expresion="piola" ancho={44} />
+        </button>
       </header>
 
       <div
@@ -344,6 +353,7 @@ export default function PantallaNivel({ nivel, alVolver, alSiguiente }: Props) {
 
       {fase === 'final' && (
         <div className="nivel__final">
+          <Benja expresion="feliz" ancho={96} />
           <div className="nivel__final-estrellas">{'⭐'.repeat(estrellas ?? 1)}</div>
           {mostrarTotal && objetivo.modo !== 'predecir' && (
             <div className="nivel__final-total">{totalObjetivo}</div>
