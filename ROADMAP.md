@@ -28,11 +28,14 @@ paso, el orden de sub-ítems es sugerido.
 
 - [ ] Los 7 tramos de progresión de DESIGN.md 3, una idea nueva por nivel.
       El símbolo × recién tras ~15 puzzles resueltos armando grillas.
-- [ ] Sonidos: acorde de acierto compartido + sonidos de pieza (GAMEFEEL.md 11.4
+      (Tramos 1-6 jugables con niveles espejo y repaso; falta el tramo 7:
+      factor de 2 dígitos con paquetes de 10.)
+- [x] Sonidos: acorde de acierto compartido + sonidos de pieza (GAMEFEEL.md 11.4
       punto 2), botón de mute global persistido.
-- [ ] Mascota con 3 estados: idle, festejo, comiendo (GAMEFEEL.md 11.4 punto 3);
+- [x] Mascota con 3 estados: idle, festejo, comiendo (GAMEFEEL.md 11.4 punto 3);
       escucha eventos, nadie le habla directo.
-- [ ] Mapa camino del mundo, estrellas por nivel, pistas progresivas.
+- [x] Mapa camino del mundo y estrellas por nivel. (La pista automática por
+      intentos repetidos funciona; pistas explícitas progresivas pendientes.)
 - [ ] Boss "La Gran Cosecha" (GAMEFEEL.md 4) y sandbox desbloqueable.
 
 ## Paso 3: Testear con Benja
