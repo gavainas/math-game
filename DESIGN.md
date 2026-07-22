@@ -35,6 +35,13 @@ Se desbloquean en orden. División usa el mismo tablero visual que Multiplicaci�
 
 **Regla de oro:** el símbolo "×" y la palabra "multiplicar" no aparecen hasta que el chico ya resolvió ~15 puzzles armando grillas.
 
+**Ajuste tras pruebas reales (2026-07):** rellenar una grilla ya dibujada resultó
+tarea motriz, no matemática. Solo los 2 primeros niveles enseñan la interfaz con
+grilla marcada; del tercero en adelante se construye en campo abierto (plantar y
+desplantar tocando) a partir de la consigna: "F grupos de C" visual, el total a
+factorear (espejo, varias respuestas válidas) o elegir el producto correcto entre
+distractores (predicción). Tablas hasta el 9 y totales hasta 48.
+
 ## 4. Mundo 2: División (Reparto Justo)
 
 **Mecánica:** arrastrar una cantidad de objetos y repartirlos uno por uno entre N "amigos" en pantalla. Lo que sobra (resto) queda visualmente aislado, no desaparece.

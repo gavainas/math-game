@@ -32,6 +32,13 @@ describe('grilla', () => {
     expect(evaluarNivel(espejo, { tipo: 'grilla', filas: 2, columnas: 6 }).resuelto).toBe(true);
     expect(evaluarNivel(espejo, { tipo: 'grilla', filas: 2, columnas: 5 }).resuelto).toBe(false);
   });
+
+  it('modo predecir: se elige el producto correcto', () => {
+    const predecir = nivel('grilla', { tipo: 'grilla', modo: 'predecir', filas: 6, columnas: 4 });
+    expect(evaluarNivel(predecir, { tipo: 'grilla', filas: 1, columnas: 24 }).resuelto).toBe(true);
+    expect(evaluarNivel(predecir, { tipo: 'grilla', filas: 1, columnas: 22 }).resuelto).toBe(false);
+    expect(evaluarNivel(predecir, { tipo: 'grilla', filas: 0, columnas: 0 }).resuelto).toBe(false);
+  });
 });
 
 describe('reparto', () => {

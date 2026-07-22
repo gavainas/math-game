@@ -28,8 +28,9 @@ paso, el orden de sub-ítems es sugerido.
 
 - [ ] Los 7 tramos de progresión de DESIGN.md 3, una idea nueva por nivel.
       El símbolo × recién tras ~15 puzzles resueltos armando grillas.
-      (Tramos 1-6 jugables con niveles espejo y repaso; falta el tramo 7:
-      factor de 2 dígitos con paquetes de 10.)
+      (26 niveles jugables con el ajuste de dificultad de DESIGN.md 3: campo
+      libre, factoreo y predicción; falta el tramo 7: factor de 2 dígitos.)
+      Modo prueba para padres: agregar `?probar` a la URL desbloquea todo.
 - [x] Sonidos: acorde de acierto compartido + sonidos de pieza (GAMEFEEL.md 11.4
       punto 2), botón de mute global persistido.
 - [x] Mascota con 3 estados: idle, festejo, comiendo (GAMEFEEL.md 11.4 punto 3);

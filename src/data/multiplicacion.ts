@@ -1,6 +1,14 @@
-// Mundo 1: Multiplicación (Array Garden). Progresión de DESIGN.md sección 3:
-// una idea nueva por nivel, el símbolo × recién después de ~15 puzzles.
-// La secuencia final intercala repaso espaciado (DESIGN.md 7).
+// Mundo 1: Multiplicación (Array Garden). Progresión de DESIGN.md sección 3
+// con el ajuste de dificultad pedido en las pruebas reales: los dos primeros
+// niveles enseñan la interfaz y de ahí en más el jugador construye solo.
+//
+// - armar en campo libre: la consigna dice "F grupos de C" (o "F × C") y hay
+//   que decidir la forma del rectángulo en un campo abierto.
+// - espejo (total): dado el número, factorear cualquier rectángulo que lo
+//   produzca; hay varias respuestas válidas.
+// - predecir: la grilla ya está plantada y hay que elegir el producto
+//   correcto entre distractores.
+// El símbolo × recién aparece después de ~15 puzzles resueltos construyendo.
 
 import { intercalarRepaso } from '../engine/progresion';
 import type { Nivel } from '../engine/tipos';
@@ -27,28 +35,49 @@ function espejo(id: string, total: number): Nivel {
   };
 }
 
+function predecir(id: string, filas: number, columnas: number): Nivel {
+  return {
+    id,
+    mundo: 'multiplicacion',
+    tipo: 'grilla',
+    objetivo: { tipo: 'grilla', modo: 'predecir', filas, columnas },
+    pistas: [],
+  };
+}
+
 const NIVELES_NUEVOS: Nivel[] = [
-  // Tramo 1: armar grupos iguales, sin números a la vista
-  armar('m1-n01', 2, 2),
-  armar('m1-n02', 3, 2),
-  // Tramo 2: conmutatividad sin nombrarla (la traspuesta también resuelve)
-  armar('m1-n03', 2, 3),
-  armar('m1-n04', 4, 2),
-  // Tramo 3: aparece el total como contador
-  armar('m1-n05', 3, 3),
-  armar('m1-n06', 4, 3),
-  // Tramo 4: tablas del 2, 5 y 10 (patrones fáciles de ver)
-  armar('m1-n07', 2, 5),
-  armar('m1-n08', 5, 3),
-  armar('m1-n09', 2, 10),
-  armar('m1-n10', 5, 4),
-  // Tramo 5: espejo — acá está el total, armá una grilla que lo produzca
-  espejo('m1-n11', 12),
-  espejo('m1-n12', 20),
-  // Tramo 6: notación × por primera vez
-  armar('m1-n13', 3, 4, true),
-  armar('m1-n14', 4, 5),
-  espejo('m1-n15', 18),
+  // Interfaz: grilla marcada, fichas para arrastrar. Solo estos dos son "fáciles".
+  armar('m1-n01', 2, 3),
+  armar('m1-n02', 3, 3),
+  // Grupos de: campo libre, el jugador decide la forma
+  armar('m1-n03', 2, 4),
+  armar('m1-n04', 4, 3),
+  armar('m1-n05', 3, 5), // desde acá aparece el contador de total
+  armar('m1-n06', 4, 6),
+  // Tablas más duras
+  armar('m1-n07', 6, 4),
+  armar('m1-n08', 5, 7),
+  armar('m1-n09', 8, 3),
+  armar('m1-n10', 6, 6),
+  armar('m1-n11', 9, 4),
+  // Espejo: factorear el total
+  espejo('m1-n12', 12),
+  espejo('m1-n13', 18),
+  espejo('m1-n14', 24),
+  espejo('m1-n15', 30),
+  // Predicción visual (sin símbolo todavía)
+  predecir('m1-n16', 4, 6),
+  predecir('m1-n17', 7, 3),
+  // Notación ×
+  armar('m1-n18', 3, 4, true),
+  armar('m1-n19', 7, 5),
+  armar('m1-n20', 6, 8),
+  armar('m1-n21', 9, 6),
+  espejo('m1-n22', 36),
+  espejo('m1-n23', 42),
+  predecir('m1-n24', 8, 6),
+  predecir('m1-n25', 9, 7),
+  espejo('m1-n26', 48),
 ];
 
 export const nivelesMultiplicacion: Nivel[] = intercalarRepaso(NIVELES_NUEVOS, 4);
@@ -64,10 +93,22 @@ function posicionBase(nivelId: string): number {
 export function caracteristicasNivel(nivelId: string): {
   mostrarTotal: boolean;
   mostrarNotacion: boolean;
+  campoLibre: boolean;
 } {
   const posicion = posicionBase(nivelId);
   return {
     mostrarTotal: posicion >= ORDEN_BASE.indexOf('m1-n05'),
-    mostrarNotacion: posicion >= ORDEN_BASE.indexOf('m1-n13'),
+    mostrarNotacion: posicion >= ORDEN_BASE.indexOf('m1-n18'),
+    campoLibre: posicion >= ORDEN_BASE.indexOf('m1-n03'),
   };
+}
+
+// Distractores de predicción: cerca del producto real, deterministas.
+export function opcionesPrediccion(filas: number, columnas: number): number[] {
+  const producto = filas * columnas;
+  const candidatos = [producto, producto - columnas, producto + filas, producto - 2, producto + 4];
+  const unicos = [...new Set(candidatos.filter((n) => n > 0))].slice(0, 4);
+  // Orden estable pero no obvio: rota según el producto.
+  const giro = producto % unicos.length;
+  return [...unicos.slice(giro), ...unicos.slice(0, giro)];
 }

@@ -22,7 +22,10 @@ export type Pista =
 export type ObjetivoGrilla =
   | { tipo: 'grilla'; modo: 'armar'; filas: number; columnas: number }
   // Nivel espejo: dado el total, armar cualquier grilla que lo produzca.
-  | { tipo: 'grilla'; modo: 'total'; total: number };
+  | { tipo: 'grilla'; modo: 'total'; total: number }
+  // Predicción (DESIGN.md 3, tramo 5): la grilla ya está armada y hay que
+  // elegir el total correcto entre opciones.
+  | { tipo: 'grilla'; modo: 'predecir'; filas: number; columnas: number };
 
 export type ObjetivoReparto =
   | { tipo: 'reparto'; modo: 'repartir'; cantidad: number; amigos: number }

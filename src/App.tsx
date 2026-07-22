@@ -20,6 +20,9 @@ import './App.css';
 
 type Pantalla = { vista: 'mapa' } | { vista: 'nivel'; nivel: Nivel };
 
+// ?probar en la URL desbloquea todos los niveles para revisarlos (modo padre).
+const MODO_PRUEBA = new URLSearchParams(window.location.search).has('probar');
+
 export default function App() {
   const [progreso, setProgreso] = useState<Progreso>(() => cargarProgreso());
   const [pantalla, setPantalla] = useState<Pantalla>({ vista: 'mapa' });
@@ -65,6 +68,7 @@ export default function App() {
         <MapaMundo
           niveles={nivelesMultiplicacion}
           progreso={progreso}
+          modoPrueba={MODO_PRUEBA}
           alElegir={(nivel) => setPantalla({ vista: 'nivel', nivel })}
         />
       ) : (

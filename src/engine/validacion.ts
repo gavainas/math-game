@@ -56,6 +56,14 @@ function evaluarGrilla(
   estado: { filas: number; columnas: number },
 ): Evaluacion {
   const celdas = estado.filas * estado.columnas;
+  if (objetivo.modo === 'predecir') {
+    // El estado trae el total elegido como 1×n. No hay avance parcial:
+    // se acierta el producto o no pasa nada.
+    return {
+      resuelto: estado.filas > 0 && celdas === objetivo.filas * objetivo.columnas,
+      avance: 0,
+    };
+  }
   if (objetivo.modo === 'armar') {
     // La conmutatividad vale desde el principio: 3×4 y 4×3 arman el mismo total
     // (DESIGN.md 3, progresión 2).

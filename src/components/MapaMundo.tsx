@@ -8,9 +8,11 @@ type Props = {
   niveles: Nivel[];
   progreso: Progreso;
   alElegir: (nivel: Nivel) => void;
+  // Modo prueba (?probar en la URL): desbloquea todo para revisar niveles.
+  modoPrueba?: boolean;
 };
 
-export default function MapaMundo({ niveles, progreso, alElegir }: Props) {
+export default function MapaMundo({ niveles, progreso, alElegir, modoPrueba = false }: Props) {
   const proximo = siguienteNivel(niveles, progreso);
 
   return (
@@ -20,12 +22,14 @@ export default function MapaMundo({ niveles, progreso, alElegir }: Props) {
         {niveles.map((nivel, i) => {
           const completado = progreso.nivelesCompletados[nivel.id];
           const esProximo = proximo?.id === nivel.id;
-          const jugable = puedeJugar(nivel, niveles, progreso);
+          const jugable = modoPrueba || puedeJugar(nivel, niveles, progreso);
           const clase = completado
             ? 'nodo nodo--completado'
             : esProximo
               ? 'nodo nodo--proximo'
-              : 'nodo nodo--bloqueado';
+              : jugable
+                ? 'nodo'
+                : 'nodo nodo--bloqueado';
           return (
             <button
               key={nivel.id}
