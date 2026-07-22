@@ -16,7 +16,7 @@ export default function IntroBenja({ alEmpezar }: Props) {
         ¡Bienvenido a mi juego!
       </div>
       <div className="intro__benja">
-        <Benja expresion="feliz" cuerpo ancho={190} />
+        <Benja expresion="feliz" cuerpo ancho={165} />
       </div>
       <button type="button" className="boton-redondo boton-redondo--principal intro__jugar" onClick={alEmpezar}>
         ▶
