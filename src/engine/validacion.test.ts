@@ -57,6 +57,20 @@ describe('reparto', () => {
     ).toBe(false);
   });
 
+  it('modo predecir: se elige el cociente correcto (con resto)', () => {
+    const predecir = nivel(
+      'reparto',
+      { tipo: 'reparto', modo: 'predecir', cantidad: 23, amigos: 4 },
+      'division',
+    );
+    expect(
+      evaluarNivel(predecir, { tipo: 'reparto', porAmigo: [5], sinRepartir: 0 }).resuelto,
+    ).toBe(true);
+    expect(
+      evaluarNivel(predecir, { tipo: 'reparto', porAmigo: [6], sinRepartir: 0 }).resuelto,
+    ).toBe(false);
+  });
+
   it('modo amigos (espejo): ¿cuántos amigos si cada uno recibe 4?', () => {
     const espejo = nivel(
       'reparto',

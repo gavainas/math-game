@@ -84,7 +84,17 @@ function evaluarReparto(
   objetivo: ObjetivoReparto,
   estado: { porAmigo: number[]; sinRepartir: number },
 ): Evaluacion {
-  const repartidos = estado.porAmigo.reduce((suma, n) => suma + n, 0);
+  if (objetivo.modo === 'predecir') {
+    // El estado trae el cociente elegido como único elemento. Sin avance
+    // parcial: se acierta o no pasa nada.
+    const cuota = Math.floor(objetivo.cantidad / objetivo.amigos);
+    return {
+      resuelto: estado.porAmigo.length === 1 && estado.porAmigo[0] === cuota,
+      avance: 0,
+    };
+  }
+  // El hito de avance es "amigo servido" con su cuota exacta (GAMEFEEL.md 6),
+  // no cada fruta entregada: si no, el festejo parcial sonaría todo el tiempo.
   if (objetivo.modo === 'repartir') {
     const cuota = Math.floor(objetivo.cantidad / objetivo.amigos);
     const resto = objetivo.cantidad % objetivo.amigos;
@@ -92,15 +102,16 @@ function evaluarReparto(
       estado.porAmigo.length === objetivo.amigos &&
       estado.porAmigo.every((n) => n === cuota) &&
       estado.sinRepartir === resto;
-    const repartibles = objetivo.cantidad - resto;
-    return { resuelto, avance: repartibles > 0 ? acotar(repartidos / repartibles) : 0 };
+    const servidos = estado.porAmigo.filter((n) => n === cuota).length;
+    return { resuelto, avance: acotar(servidos / objetivo.amigos) };
   }
   const resuelto =
     estado.porAmigo.length > 0 &&
     estado.porAmigo.every((n) => n === objetivo.porAmigo) &&
     estado.sinRepartir === 0 &&
     estado.porAmigo.length * objetivo.porAmigo === objetivo.cantidad;
-  return { resuelto, avance: acotar(repartidos / objetivo.cantidad) };
+  const completos = estado.porAmigo.filter((n) => n === objetivo.porAmigo).length;
+  return { resuelto, avance: acotar((completos * objetivo.porAmigo) / objetivo.cantidad) };
 }
 
 function evaluarCorte(

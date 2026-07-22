@@ -30,7 +30,9 @@ export type ObjetivoGrilla =
 export type ObjetivoReparto =
   | { tipo: 'reparto'; modo: 'repartir'; cantidad: number; amigos: number }
   // Nivel espejo: ¿cuántos amigos si cada uno recibe `porAmigo`?
-  | { tipo: 'reparto'; modo: 'amigos'; cantidad: number; porAmigo: number };
+  | { tipo: 'reparto'; modo: 'amigos'; cantidad: number; porAmigo: number }
+  // Predicción: elegir el cociente correcto sin repartir a mano.
+  | { tipo: 'reparto'; modo: 'predecir'; cantidad: number; amigos: number };
 
 export type ObjetivoCorte =
   | { tipo: 'corte'; modo: 'cortar'; partes: number }

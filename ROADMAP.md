@@ -46,8 +46,11 @@ paso, el orden de sub-ítems es sugerido.
 
 ## Paso 4: Mundo 2 (División), reusando componentes de Mundo 1
 
-- [ ] Reparto justo con resto visible y con personalidad (GAMEFEEL.md 8);
-      mismo tablero que Mundo 1 para el nivel inverso (DESIGN.md 4).
+- [x] Reparto justo con resto visible (tocar da/devuelve frutas), espejo de
+      amigos ("cada uno recibe C, ¿cuántos entran?") y predicción de cocientes
+      con distractores, incluidos los de 2 dígitos; ÷ desde mitad del mundo.
+      Selector de mundos con desbloqueo lineal. (Pendiente: la animación de
+      puchero del resto y la conexión visual con el tablero de M1 — DESIGN.md 4.3.)
 - [ ] Stickers, evolución de mascota y secretos (GAMEFEEL.md 11.4 punto 4):
       etapa 1 al terminar M1 ya operativa, álbum visible desde el mapa.
 - [ ] Boss "El Picnic Gigante".
