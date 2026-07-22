@@ -73,6 +73,9 @@ paso, el orden de sub-ítems es sugerido.
 
 ## Paso 7: Arte final + mascota (Higgsfield / Claude Design)
 
-- [ ] Recién con la mecánica validada: mascota con character reference, íconos
-      y fondos por mundo, paletas de DESIGN.md 9. Reemplaza placeholders sin
-      tocar lógica (el sistema de eventos lo garantiza).
+- [x] Primer pase de arte: Benja como guía en SVG (intro, carteles por
+      mecánica y reacciones a eventos) + fondos con gradiente por mundo.
+- [ ] Arte ilustrado final: integrar el character sheet real de Benja (subir
+      el PNG al repo), íconos y fondos por mundo con las paletas de DESIGN.md
+      9. Reemplaza placeholders sin tocar lógica (el sistema de eventos lo
+      garantiza).

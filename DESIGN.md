@@ -42,6 +42,12 @@ desplantar tocando) a partir de la consigna: "F grupos de C" visual, el total a
 factorear (espejo, varias respuestas válidas) o elegir el producto correcto entre
 distractores (predicción). Tablas hasta el 9 y totales hasta 48.
 
+**Benja como guía (2026-07, pedido del autor):** la mascota es Benja, el
+personaje del hijo (SVG basado en su character sheet). Hace la intro ("¡Hola!
+Yo soy Benja...") y muestra un cartel corto la primera vez que aparece cada
+mecánica — excepción acotada a la regla "sin texto instructivo" de GAMEFEEL.md
+12: una frase, rioplatense, una sola vez, salteable con un toque.
+
 ## 4. Mundo 2: División (Reparto Justo)
 
 **Mecánica:** arrastrar una cantidad de objetos y repartirlos uno por uno entre N "amigos" en pantalla. Lo que sobra (resto) queda visualmente aislado, no desaparece.

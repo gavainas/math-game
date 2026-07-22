@@ -15,9 +15,12 @@ import { nivelesMultiplicacion } from './data/multiplicacion';
 import { nivelesDivision } from './data/division';
 import { nivelesEcuaciones } from './data/ecuaciones';
 import { conectarSonidos } from './components/sonidos';
+import { CARTELES_BENJA, idBase } from './data/carteles';
 import Mascota from './components/Mascota';
 import MapaMundo from './components/MapaMundo';
 import SelectorMundos from './components/SelectorMundos';
+import IntroBenja from './components/IntroBenja';
+import CartelBenja from './components/CartelBenja';
 import PantallaNivel from './worlds/multiplicacion/PantallaNivel';
 import PantallaReparto from './worlds/division/PantallaReparto';
 import PantallaBalanza from './worlds/ecuaciones/PantallaBalanza';
@@ -30,6 +33,7 @@ const TODOS_LOS_NIVELES: Nivel[] = [
 ];
 
 type Pantalla =
+  | { vista: 'intro' }
   | { vista: 'mundos' }
   | { vista: 'mapa'; mundo: Mundo }
   | { vista: 'nivel'; nivel: Nivel };
@@ -39,7 +43,10 @@ const MODO_PRUEBA = new URLSearchParams(window.location.search).has('probar');
 
 export default function App() {
   const [progreso, setProgreso] = useState<Progreso>(() => cargarProgreso());
-  const [pantalla, setPantalla] = useState<Pantalla>({ vista: 'mundos' });
+  const [pantalla, setPantalla] = useState<Pantalla>(() =>
+    cargarProgreso().introVista ? { vista: 'mundos' } : { vista: 'intro' },
+  );
+  const [cartel, setCartel] = useState<string | null>(null); // id base del nivel
 
   const progresoRef = useRef(progreso);
   progresoRef.current = progreso;
@@ -75,13 +82,56 @@ export default function App() {
     nivelesDeMundo(TODOS_LOS_NIVELES, mundo).find(
       (nivel) => !progreso.nivelesCompletados[nivel.id],
     ) ?? null;
-  const abrirNivel = (nivel: Nivel) => setPantalla({ vista: 'nivel', nivel });
+
+  const abrirNivel = (nivel: Nivel) => {
+    setPantalla({ vista: 'nivel', nivel });
+    const base = idBase(nivel.id);
+    if (CARTELES_BENJA[base] && !(progreso.cartelesVistos ?? []).includes(base)) {
+      setCartel(base);
+    }
+  };
+
+  const cerrarCartel = () => {
+    if (cartel !== null) {
+      const nuevo = {
+        ...progreso,
+        cartelesVistos: [...(progreso.cartelesVistos ?? []), cartel],
+      };
+      guardarProgreso(nuevo);
+      setProgreso(nuevo);
+    }
+    setCartel(null);
+  };
+
+  const terminarIntro = () => {
+    const nuevo = { ...progreso, introVista: true };
+    guardarProgreso(nuevo);
+    setProgreso(nuevo);
+    setPantalla({ vista: 'mundos' });
+  };
+
+  // Fondo según el mundo que se está mirando.
+  const mundoActual: Mundo | null =
+    pantalla.vista === 'mapa'
+      ? pantalla.mundo
+      : pantalla.vista === 'nivel'
+        ? pantalla.nivel.mundo
+        : null;
+
+  useEffect(() => {
+    document.body.className = mundoActual ? `fondo--${mundoActual}` : '';
+    return () => {
+      document.body.className = '';
+    };
+  }, [mundoActual]);
 
   return (
     <main className="juego">
       <button type="button" className="boton-redondo boton-sonido" onClick={alternarSonido}>
         {progreso.sonidoActivado ? '🔊' : '🔇'}
       </button>
+
+      {pantalla.vista === 'intro' && <IntroBenja alEmpezar={terminarIntro} />}
 
       {pantalla.vista === 'mundos' && (
         <SelectorMundos
@@ -117,7 +167,11 @@ export default function App() {
           return <PantallaNivel key={nivel.id} {...props} />;
         })()}
 
-      <Mascota />
+      {pantalla.vista === 'nivel' && cartel !== null && (
+        <CartelBenja texto={CARTELES_BENJA[cartel]} alCerrar={cerrarCartel} />
+      )}
+
+      {pantalla.vista !== 'intro' && <Mascota />}
     </main>
   );
 }

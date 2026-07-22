@@ -96,4 +96,7 @@ export type Progreso = {
   secretosEncontrados: string[];
   etapaMascota: EtapaMascota;
   sonidoActivado: boolean;
+  // Opcionales (compatibles hacia atrás): guía de Benja.
+  introVista?: boolean;
+  cartelesVistos?: string[];
 };

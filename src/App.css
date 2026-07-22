@@ -723,21 +723,16 @@
 
 .mascota {
   position: fixed;
-  right: 18px;
-  bottom: 16px;
+  right: 14px;
+  bottom: 10px;
   z-index: 25;
   pointer-events: none;
 }
 
 .mascota__cuerpo {
-  width: 84px;
-  height: 76px;
-  border-radius: 46% 46% 42% 42%;
-  background: radial-gradient(circle at 35% 25%, #ffd9a0, #f5a95d 70%);
-  border: 2px solid rgba(91, 74, 63, 0.25);
-  position: relative;
   animation: respirar 2.6s ease-in-out infinite;
   transform-origin: bottom center;
+  filter: drop-shadow(0 4px 6px rgba(91, 74, 63, 0.25));
 }
 
 @keyframes respirar {
@@ -746,53 +741,12 @@
     transform: scale(1, 1);
   }
   50% {
-    transform: scale(1.03, 0.97);
+    transform: scale(1.02, 0.98);
   }
 }
 
-.mascota__ojo {
-  position: absolute;
-  top: 26px;
-  width: 9px;
-  height: 12px;
-  border-radius: 50%;
-  background: #4a3b31;
-  animation: parpadear 4.5s infinite;
-}
-
-.mascota__ojo--izq {
-  left: 24px;
-}
-
-.mascota__ojo--der {
-  right: 24px;
-}
-
-@keyframes parpadear {
-  0%,
-  94%,
-  100% {
-    transform: scaleY(1);
-  }
-  96%,
-  98% {
-    transform: scaleY(0.1);
-  }
-}
-
-.mascota__boca {
-  position: absolute;
-  left: 50%;
-  top: 48px;
-  width: 18px;
-  height: 6px;
-  transform: translateX(-50%);
-  border-radius: 0 0 12px 12px;
-  background: #4a3b31;
-  transition: height 0.15s, width 0.15s;
-}
-
-.mascota--festejo .mascota__cuerpo {
+.mascota--festejo .mascota__cuerpo,
+.mascota--comiendo .mascota__cuerpo {
   animation: saltito 0.7s ease-out;
 }
 
@@ -802,31 +756,127 @@
     transform: translateY(0) scale(1, 1);
   }
   30% {
-    transform: translateY(-16px) scale(0.96, 1.05);
+    transform: translateY(-16px) scale(0.97, 1.04);
   }
   60% {
-    transform: translateY(0) scale(1.06, 0.92);
+    transform: translateY(0) scale(1.05, 0.94);
   }
 }
 
-.mascota--festejo .mascota__boca {
-  width: 20px;
-  height: 12px;
+/* --- Intro y carteles de Benja --- */
+
+.bocadillo {
+  position: relative;
+  background: #fff;
+  border: 2px solid var(--borde);
+  border-radius: 20px;
+  padding: 16px 22px;
+  font-size: 1.15rem;
+  line-height: 1.5;
+  color: var(--tierra);
+  box-shadow: 0 6px 16px rgba(91, 74, 63, 0.15);
 }
 
-.mascota--comiendo .mascota__boca {
-  width: 26px;
-  height: 18px;
-  border-radius: 50%;
-  animation: masticar 0.35s ease-in-out 4;
+.bocadillo::after {
+  content: '';
+  position: absolute;
+  bottom: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 12px solid transparent;
+  border-top-color: #fff;
+  border-bottom: none;
 }
 
-@keyframes masticar {
-  0%,
-  100% {
-    transform: translateX(-50%) scaleY(1);
-  }
-  50% {
-    transform: translateX(-50%) scaleY(0.3);
-  }
+.intro {
+  min-height: 88dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 26px;
+  text-align: center;
+}
+
+.intro__bocadillo {
+  font-size: 1.4rem;
+  animation: aparecer 0.5s ease-out;
+}
+
+.intro__benja {
+  animation: respirar 2.6s ease-in-out infinite;
+  transform-origin: bottom center;
+  filter: drop-shadow(0 8px 14px rgba(91, 74, 63, 0.25));
+}
+
+.intro__jugar {
+  width: 72px;
+  height: 72px;
+  font-size: 1.8rem;
+}
+
+.cartel {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  background: rgba(91, 74, 63, 0.25);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 24px;
+}
+
+.cartel__tarjeta {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--tarjeta);
+  border: 2px solid var(--borde);
+  border-radius: 24px;
+  padding: 18px 22px;
+  max-width: 460px;
+  box-shadow: 0 12px 30px rgba(91, 74, 63, 0.3);
+  animation: aparecer 0.3s ease-out;
+}
+
+.cartel__bocadillo {
+  box-shadow: none;
+  border: none;
+  padding: 0;
+  background: none;
+}
+
+.cartel__bocadillo::after {
+  display: none;
+}
+
+.cartel__seguir {
+  align-self: flex-end;
+  color: var(--verde-oscuro);
+  font-size: 1.2rem;
+  animation: latido 1.4s ease-in-out infinite;
+}
+
+/* --- Fondos por mundo (clase puesta en el body) --- */
+
+body {
+  transition: background 0.5s;
+}
+
+body.fondo--multiplicacion {
+  background:
+    radial-gradient(circle at 15% 8%, rgba(255, 209, 102, 0.28), transparent 34%),
+    linear-gradient(#f4f8ea, #e2f0d2) fixed;
+}
+
+body.fondo--division {
+  background:
+    radial-gradient(circle at 85% 6%, rgba(232, 114, 44, 0.16), transparent 32%),
+    linear-gradient(#fdf5e6, #fae3c4) fixed;
+}
+
+body.fondo--ecuaciones {
+  background:
+    radial-gradient(circle at 50% 0%, rgba(170, 140, 220, 0.2), transparent 36%),
+    linear-gradient(#f4f0fa, #e6ddf4) fixed;
 }
