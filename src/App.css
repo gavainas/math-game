@@ -1196,3 +1196,92 @@ body.fondo--ecuaciones {
     height: 64px;
   }
 }
+
+/* --- Mundo 3: pizzería --- */
+
+.plato {
+  padding: 22px;
+  background: var(--tarjeta);
+  border: 1px solid var(--borde);
+  border-radius: 50%;
+  transition: box-shadow 0.6s;
+}
+
+.plato--resuelto {
+  box-shadow: 0 0 0 4px var(--ambar), 0 0 32px rgba(255, 209, 102, 0.6);
+}
+
+.pizza {
+  display: block;
+}
+
+.pizza__porcion {
+  fill: #ffe1a8;
+  stroke: #b3541e;
+  stroke-width: 4;
+  stroke-linejoin: round;
+  cursor: pointer;
+  transition: fill 0.15s;
+}
+
+.pizza__porcion--servida {
+  fill: #f0904a;
+}
+
+.modelo-pizza {
+  display: inline-block;
+  padding: 6px;
+  border: 3px solid var(--ambar);
+  border-radius: 50%;
+  background: rgba(255, 209, 102, 0.15);
+}
+
+.cortes {
+  display: flex;
+  gap: 18px;
+}
+
+.cortes__cortar {
+  width: 64px;
+  height: 64px;
+  font-size: 1.7rem;
+}
+
+.fraccion {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 1.9rem;
+  font-weight: 700;
+  color: var(--verde-oscuro);
+  line-height: 1.15;
+  vertical-align: middle;
+}
+
+.fraccion__raya {
+  width: 34px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--verde-oscuro);
+}
+
+.nivel__notacion--fraccion {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.manzanas {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+  max-width: 420px;
+  font-size: 2rem;
+}
+
+body.fondo--fracciones {
+  background:
+    radial-gradient(circle at 80% 4%, rgba(240, 144, 74, 0.18), transparent 32%),
+    linear-gradient(#fdf8e4, #f8ecc0) fixed;
+}

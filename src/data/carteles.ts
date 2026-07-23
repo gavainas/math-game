@@ -5,6 +5,7 @@
 
 import type { Nivel } from '../engine/tipos';
 import { caracteristicasNivel } from './multiplicacion';
+import { caracteristicasFracciones } from './fracciones';
 
 export type Explicacion = { clave: string; texto: string };
 
@@ -47,6 +48,30 @@ export function explicacionDeNivel(nivel: Nivel): Explicacion {
     return {
       clave: 'reparto-repartir',
       texto: 'Tocá un amigo para darle una manzana. ¡Repartí parejo! Si sobra, se queda al costado.',
+    };
+  }
+  if (nivel.tipo === 'corte') {
+    const objetivo = nivel.objetivo;
+    if (objetivo.modo === 'deCantidad') {
+      return {
+        clave: 'corte-cantidad',
+        texto: '¿Cuánto es esa fracción de las manzanas? Llevá el número a la caja.',
+      };
+    }
+    if (objetivo.modo === 'sombrear') {
+      return caracteristicasFracciones(nivel.id).mostrarNotacion
+        ? {
+            clave: 'corte-notacion',
+            texto: 'El de abajo dice en cuántas partes cortar; el de arriba, cuántas servir.',
+          }
+        : {
+            clave: 'corte-sombrear',
+            texto: 'Cortá igual que la pizza chiquita y tocá las porciones para servirlas.',
+          };
+    }
+    return {
+      clave: 'corte-cortar',
+      texto: 'Cortá la pizza igual que la chiquita: 🔪 corta una vez más, ↩️ deshace.',
     };
   }
   if (nivel.tipo === 'balanza') {

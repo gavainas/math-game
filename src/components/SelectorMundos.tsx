@@ -1,7 +1,5 @@
 // Selector de mundos: se desbloquean en orden (DESIGN.md 2). Sin texto:
 // ícono grande, candado para lo que falta, obrador para lo no construido.
-// Mientras un mundo intermedio no esté construido (hoy: fracciones), el
-// desbloqueo salta al siguiente construido.
 
 import { ORDEN_MUNDOS, mundoCompleto } from '../engine';
 import type { Mundo, Nivel, Progreso } from '../engine';
@@ -14,7 +12,7 @@ const ICONOS: Record<Mundo, string> = {
   ecuaciones: '📦',
 };
 
-const CONSTRUIDOS: Mundo[] = ['multiplicacion', 'division', 'ecuaciones'];
+const CONSTRUIDOS: Mundo[] = ['multiplicacion', 'division', 'fracciones', 'ecuaciones'];
 
 type Props = {
   niveles: Nivel[];

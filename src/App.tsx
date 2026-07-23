@@ -13,6 +13,7 @@ import {
 import type { Mundo, Nivel, Progreso } from './engine';
 import { nivelesMultiplicacion } from './data/multiplicacion';
 import { nivelesDivision } from './data/division';
+import { nivelesFracciones } from './data/fracciones';
 import { nivelesEcuaciones } from './data/ecuaciones';
 import { conectarSonidos } from './components/sonidos';
 import { explicacionDeNivel } from './data/carteles';
@@ -24,12 +25,14 @@ import IntroBenja from './components/IntroBenja';
 import CartelBenja from './components/CartelBenja';
 import PantallaNivel from './worlds/multiplicacion/PantallaNivel';
 import PantallaReparto from './worlds/division/PantallaReparto';
+import PantallaPizza from './worlds/fracciones/PantallaPizza';
 import PantallaBalanza from './worlds/ecuaciones/PantallaBalanza';
 import './App.css';
 
 const TODOS_LOS_NIVELES: Nivel[] = [
   ...nivelesMultiplicacion,
   ...nivelesDivision,
+  ...nivelesFracciones,
   ...nivelesEcuaciones,
 ];
 
@@ -169,6 +172,7 @@ export default function App() {
             alAyuda: pedirAyuda,
           };
           if (nivel.tipo === 'reparto') return <PantallaReparto key={nivel.id} {...props} />;
+          if (nivel.tipo === 'corte') return <PantallaPizza key={nivel.id} {...props} />;
           if (nivel.tipo === 'balanza') return <PantallaBalanza key={nivel.id} {...props} />;
           return <PantallaNivel key={nivel.id} {...props} />;
         })()}

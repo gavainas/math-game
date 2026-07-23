@@ -57,8 +57,11 @@ paso, el orden de sub-ítems es sugerido.
 
 ## Paso 5: Mundo 3 (Fracciones), el más largo, ir despacio
 
-- [ ] Doble de niveles chicos que los otros mundos (DESIGN.md 5); sin
-      denominadores distintos ni fracciones impropias (quedan para v2).
+- [x] Cortar copiando modelo, cortar y servir porciones, notación a/b ligada a
+      lo ya hecho, y fracción de una cantidad con fichas (18 niveles, 22 nodos).
+      Sin denominadores distintos ni impropias (v2).
+- [ ] Comparar fracciones en recta numérica, equivalentes superponiendo barras
+      y suma con mismo denominador (DESIGN.md 5.4-5.6).
 - [ ] Estados restantes de la mascota: curiosa, hambrienta, pensativa, dormida.
 - [ ] Boss "La Pizzería Loca".
 

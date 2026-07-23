@@ -118,6 +118,11 @@ function evaluarCorte(
   objetivo: ObjetivoCorte,
   estado: { partes: number; sombreadas: number },
 ): Evaluacion {
+  if (objetivo.modo === 'deCantidad') {
+    // El estado trae la respuesta elegida en `sombreadas`. Sin avance parcial.
+    const correcto = (objetivo.cantidad * objetivo.numerador) / objetivo.denominador;
+    return { resuelto: estado.partes === 1 && estado.sombreadas === correcto, avance: 0 };
+  }
   if (objetivo.modo === 'cortar') {
     return {
       resuelto: estado.partes === objetivo.partes,

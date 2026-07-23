@@ -93,6 +93,20 @@ describe('corte', () => {
     expect(evaluarNivel(cortar, { tipo: 'corte', partes: 3, sombreadas: 0 }).resuelto).toBe(false);
   });
 
+  it('modo deCantidad: elegir cuánto es la fracción de una cantidad', () => {
+    const deCantidad = nivel(
+      'corte',
+      { tipo: 'corte', modo: 'deCantidad', numerador: 1, denominador: 2, cantidad: 8 },
+      'fracciones',
+    );
+    expect(evaluarNivel(deCantidad, { tipo: 'corte', partes: 1, sombreadas: 4 }).resuelto).toBe(
+      true,
+    );
+    expect(evaluarNivel(deCantidad, { tipo: 'corte', partes: 1, sombreadas: 3 }).resuelto).toBe(
+      false,
+    );
+  });
+
   it('sombrear pide partes y sombreadas exactas', () => {
     const sombrear = nivel(
       'corte',

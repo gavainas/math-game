@@ -36,7 +36,9 @@ export type ObjetivoReparto =
 
 export type ObjetivoCorte =
   | { tipo: 'corte'; modo: 'cortar'; partes: number }
-  | { tipo: 'corte'; modo: 'sombrear'; partes: number; sombreadas: number };
+  | { tipo: 'corte'; modo: 'sombrear'; partes: number; sombreadas: number }
+  // Fracción de una cantidad (DESIGN.md 5.7): elegir cuánto es n/d de C.
+  | { tipo: 'corte'; modo: 'deCantidad'; numerador: number; denominador: number; cantidad: number };
 
 export type TerminoBalanza =
   | { clase: 'objeto'; icono: string }
