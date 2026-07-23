@@ -11,7 +11,7 @@ const ICONOS: Record<Mundo, string> = {
   multiplicacion: '🌻',
   division: '🍎',
   fracciones: '🍕',
-  ecuaciones: '⚖️',
+  ecuaciones: '📦',
 };
 
 const CONSTRUIDOS: Mundo[] = ['multiplicacion', 'division', 'ecuaciones'];

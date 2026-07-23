@@ -178,7 +178,7 @@ export default function App() {
         <CartelBenja texto={cartel.texto} alCerrar={cerrarCartel} />
       )}
 
-      {pantalla.vista !== 'intro' && <Mascota />}
+      {pantalla.vista !== 'intro' && <Mascota etapa={progreso.etapaMascota} />}
     </main>
   );
 }

@@ -9,7 +9,7 @@ const ICONOS: Record<Mundo, { mundo: string; completado: string; proximo: string
   multiplicacion: { mundo: '🌻', completado: '🌼', proximo: '🌱' },
   division: { mundo: '🍎', completado: '🧺', proximo: '🍎' },
   fracciones: { mundo: '🍕', completado: '🍕', proximo: '🔪' },
-  ecuaciones: { mundo: '⚖️', completado: '💎', proximo: '📦' },
+  ecuaciones: { mundo: '📦', completado: '💎', proximo: '🗝️' },
 };
 
 type Props = {

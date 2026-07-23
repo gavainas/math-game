@@ -16,6 +16,7 @@ import {
   useSlot,
 } from '../../engine';
 import Benja from '../../components/Benja';
+import Celebracion from '../../components/Celebracion';
 import type { Estrellas, Nivel, ResultadoSoltar, SesionNivel } from '../../engine';
 import { caracteristicasNivel, opcionesPrediccion } from '../../data/multiplicacion';
 
@@ -341,15 +342,7 @@ export default function PantallaNivel({ nivel, alVolver, alSiguiente, alAyuda }:
         </div>
       )}
 
-      {(fase === 'cosecha' || fase === 'comiendo') && (
-        <div className="cosecha" aria-hidden="true">
-          {[0, 1, 2, 3, 4].map((i) => (
-            <span key={i} className="cosecha__brote" style={{ animationDelay: `${i * 0.09}s` }}>
-              🌱
-            </span>
-          ))}
-        </div>
-      )}
+      {(fase === 'cosecha' || fase === 'comiendo') && <Celebracion emoji="🌱" />}
 
       {fase === 'final' && (
         <div className="nivel__final">

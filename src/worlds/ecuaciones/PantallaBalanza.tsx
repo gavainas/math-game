@@ -1,17 +1,23 @@
 // Pantalla del Mundo 4 (Balanza Mágica), mecánica DragonBox de "separar la
 // cajita": el cofre 📦 es la incógnita y hay que dejarlo solo de un lado.
-// - Tocar un objeto que está en los dos platillos lo saca de ambos (quitar en
-//   espejo). Si está en uno solo, la balanza se tambalea y no pasa nada.
-// - Tocar un número se lo resta al número del otro lado (si alcanza).
-// - Tocar los cofres cuando están solos y son varios reparte el otro lado
-//   entre ellos (división en espejo).
-// La ecuación escrita aparece recién en el tramo de notación y se va
-// simplificando en vivo a medida que se despeja.
+// Los términos se ARRASTRAN al otro platillo (o se tocan, mismo efecto):
+// - Un objeto que está en los dos platillos se va de ambos (quitar en espejo).
+// - Un número se resta del número del otro lado (si alcanza).
+// - Los cofres, solos y siendo varios, se reparten el número del otro lado.
+// Jugada inválida: la balanza entera se tambalea, sin castigo.
+// El primer nivel trae tutorial: la manito muestra el gesto de llevar.
 
 import { useEffect, useRef, useState } from 'react';
-import { busJuego, crearDetectorInactividad, crearSesionNivel } from '../../engine';
+import {
+  busJuego,
+  crearDetectorInactividad,
+  crearSesionNivel,
+  useArrastre,
+  useSlot,
+} from '../../engine';
+import type { Estrellas, Nivel, ResultadoSoltar, SesionNivel, TerminoBalanza } from '../../engine';
 import Benja from '../../components/Benja';
-import type { Estrellas, Nivel, SesionNivel, TerminoBalanza } from '../../engine';
+import Celebracion from '../../components/Celebracion';
 import { caracteristicasEcuaciones } from '../../data/ecuaciones';
 
 type FaseNivel = 'jugando' | 'cosecha' | 'comiendo' | 'final';
@@ -33,6 +39,47 @@ function textoLado(terminos: TerminoBalanza[]): string {
   return partes.join(' + ') || '0';
 }
 
+type PropsTermino = {
+  termino: TerminoBalanza;
+  quitable: boolean;
+  conPulso: boolean;
+  abierto: boolean;
+  alSoltar: (slotId: string | null) => ResultadoSoltar;
+  alEncajado: () => void;
+};
+
+function TerminoPieza({ termino, quitable, conPulso, abierto, alSoltar, alEncajado }: PropsTermino) {
+  const { fase, props } = useArrastre({ alSoltar, alEncajado });
+  const clases = [
+    'termino',
+    `termino--drag-${fase}`,
+    termino.clase === 'incognita'
+      ? 'termino--cofre'
+      : termino.clase === 'numero'
+        ? 'termino--numero'
+        : 'termino--objeto',
+    conPulso && quitable ? 'termino--pulso' : '',
+  ]
+    .filter(Boolean)
+    .join(' ');
+  return (
+    <div className={clases} {...props}>
+      {termino.clase === 'objeto' ? (
+        termino.icono
+      ) : termino.clase === 'numero' ? (
+        // key por valor: cuando el número cambia, la cifra hace pop
+        <span key={termino.valor} className="termino__valor">
+          {termino.valor}
+        </span>
+      ) : abierto ? (
+        '🎁'
+      ) : (
+        '📦'
+      )}
+    </div>
+  );
+}
+
 type Props = {
   nivel: Nivel;
   alVolver: () => void;
@@ -43,21 +90,27 @@ type Props = {
 export default function PantallaBalanza({ nivel, alVolver, alSiguiente, alAyuda }: Props) {
   const objetivo = nivel.tipo === 'balanza' ? nivel.objetivo : null;
   const { mostrarNotacion } = caracteristicasEcuaciones(nivel.id);
+  const esTutorial = nivel.id.replace(/--repaso\d+$/, '') === 'm4-n01';
 
   const [lados, setLados] = useState<Lados>(() => ({
     izquierda: objetivo?.izquierda ?? [],
     derecha: objetivo?.derecha ?? [],
   }));
   const [fase, setFase] = useState<FaseNivel>('jugando');
-  const [pulso, setPulso] = useState(false);
-  const [tambaleo, setTambaleo] = useState<string | null>(null);
+  // En el tutorial los términos quitables pulsan desde el arranque.
+  const [pulso, setPulso] = useState(esTutorial);
+  const [tambaleo, setTambaleo] = useState(false);
+  const [sinJugadas, setSinJugadas] = useState(true);
   const [estrellas, setEstrellas] = useState<Estrellas | null>(null);
 
   const espejoRef = useRef({ lados, fase });
   espejoRef.current = { lados, fase };
+  const jugadaPendiente = useRef<Lados | null>(null);
   const sesionRef = useRef<SesionNivel | null>(null);
   if (sesionRef.current === null) sesionRef.current = crearSesionNivel(nivel);
   const temporizadores = useRef<ReturnType<typeof setTimeout>[]>([]);
+  const refPlatilloIzq = useSlot('platillo-izquierda');
+  const refPlatilloDer = useSlot('platillo-derecha');
 
   useEffect(() => {
     const programar = (fn: () => void, ms: number) => {
@@ -86,75 +139,78 @@ export default function PantallaBalanza({ nivel, alVolver, alSiguiente, alAyuda 
   }, []);
 
   // Calcula la jugada de un término, o null si no es válida.
-  const jugada = (
-    l: Lados,
-    lado: Lado,
-    indice: number,
-  ): { propios: TerminoBalanza[]; ajenos: TerminoBalanza[] } | null => {
+  const jugada = (l: Lados, lado: Lado, indice: number): Lados | null => {
     const propios = l[lado];
-    const ajenos = l[lado === 'izquierda' ? 'derecha' : 'izquierda'];
+    const otro: Lado = lado === 'izquierda' ? 'derecha' : 'izquierda';
+    const ajenos = l[otro];
     const termino = propios[indice];
+    if (termino === undefined) return null;
     if (termino.clase === 'objeto') {
       const j = ajenos.findIndex((a) => a.clase === 'objeto' && a.icono === termino.icono);
       if (j === -1) return null;
-      return { propios: sin(propios, indice), ajenos: sin(ajenos, j) };
+      return { ...l, [lado]: sin(propios, indice), [otro]: sin(ajenos, j) } as Lados;
     }
     if (termino.clase === 'numero') {
       const j = ajenos.findIndex((a) => a.clase === 'numero' && a.valor > termino.valor);
       if (j === -1) return null;
       return {
-        propios: sin(propios, indice),
-        ajenos: ajenos.map((a, k) =>
+        ...l,
+        [lado]: sin(propios, indice),
+        [otro]: ajenos.map((a, k) =>
           k === j && a.clase === 'numero' ? { ...a, valor: a.valor - termino.valor } : a,
         ),
-      };
+      } as Lados;
     }
     // Cofres: repartir en espejo, solo si están solos, son varios y el otro
     // lado es un único número divisible.
     const cofres = propios.filter((a) => a.clase === 'incognita').length;
     const unicoNumero = ajenos.length === 1 && ajenos[0].clase === 'numero' ? ajenos[0] : null;
-    if (
-      cofres > 1 &&
-      propios.length === cofres &&
-      unicoNumero !== null &&
-      unicoNumero.valor % cofres === 0
-    ) {
+    if (cofres > 1 && propios.length === cofres && unicoNumero && unicoNumero.valor % cofres === 0) {
       return {
-        propios: [{ clase: 'incognita' }],
-        ajenos: [{ clase: 'numero', valor: unicoNumero.valor / cofres }],
-      };
+        ...l,
+        [lado]: [{ clase: 'incognita' }],
+        [otro]: [{ clase: 'numero', valor: unicoNumero.valor / cofres }],
+      } as Lados;
     }
     return null;
   };
 
-  const tocarTermino = (lado: Lado, indice: number) => {
+  const firmaDe = (termino: TerminoBalanza): string =>
+    termino.clase === 'objeto'
+      ? `objeto-${termino.icono}`
+      : termino.clase === 'numero'
+        ? `numero-${termino.valor}`
+        : 'cofre';
+
+  // Soltar (o tocar) un término: si cae sobre un platillo y la jugada vale,
+  // se aplica cuando la pieza termina de asentarse.
+  const soltarTermino = (lado: Lado, indice: number, slotId: string | null): ResultadoSoltar => {
     const { lados: l, fase: f } = espejoRef.current;
-    if (f !== 'jugando') return;
+    if (f !== 'jugando') return 'fuera';
+    if (slotId === null) return 'fuera'; // soltó en el aire: vuelve, sin penalidad
     const resultado = jugada(l, lado, indice);
-    const termino = l[lado][indice];
     if (resultado === null) {
-      const firma =
-        termino.clase === 'objeto'
-          ? `objeto-${termino.icono}`
-          : termino.clase === 'numero'
-            ? `numero-${termino.valor}`
-            : 'cofre';
-      sesionRef.current?.registrarIntentoFallido(firma);
-      busJuego.emitir({ tipo: 'pieza_soltada_fuera' });
-      setTambaleo(`${lado}-${indice}`);
-      temporizadores.current.push(setTimeout(() => setTambaleo(null), 450));
-      return;
+      sesionRef.current?.registrarIntentoFallido(firmaDe(l[lado][indice]));
+      setTambaleo(true);
+      temporizadores.current.push(setTimeout(() => setTambaleo(false), 500));
+      return 'fuera';
     }
-    busJuego.emitir({ tipo: 'pieza_soltada_ok' });
-    const otro: Lado = lado === 'izquierda' ? 'derecha' : 'izquierda';
-    const nuevos = { ...l, [lado]: resultado.propios, [otro]: resultado.ajenos } as Lados;
-    espejoRef.current = { ...espejoRef.current, lados: nuevos };
-    setLados(nuevos);
+    jugadaPendiente.current = resultado;
+    return 'ok';
+  };
+
+  const aplicarJugada = () => {
+    const resultado = jugadaPendiente.current;
+    jugadaPendiente.current = null;
+    if (resultado === null || espejoRef.current.fase !== 'jugando') return;
+    espejoRef.current = { ...espejoRef.current, lados: resultado };
+    setLados(resultado);
     setPulso(false);
+    setSinJugadas(false);
     sesionRef.current?.actualizarEstado({
       tipo: 'balanza',
-      izquierda: nuevos.izquierda,
-      derecha: nuevos.derecha,
+      izquierda: resultado.izquierda,
+      derecha: resultado.derecha,
     });
   };
 
@@ -164,12 +220,20 @@ export default function PantallaBalanza({ nivel, alVolver, alSiguiente, alAyuda 
 
   if (objetivo === null) return null;
 
+  const resuelto = fase !== 'jugando';
   const ladoRespuesta = lados.izquierda.some((t) => t.clase === 'incognita')
     ? lados.derecha
     : lados.izquierda;
   const resumenRespuesta = ladoRespuesta
     .map((t) => (t.clase === 'objeto' ? t.icono : t.clase === 'numero' ? String(t.valor) : ''))
     .join(' ');
+  // El cofre pulsa suave cuando está a una jugada de quedar solo.
+  const cercaDeGanar =
+    !resuelto &&
+    (['izquierda', 'derecha'] as const).some((lado) => {
+      const propios = lados[lado];
+      return propios.some((t) => t.clase === 'incognita') && propios.length === 2;
+    });
 
   return (
     <div className="nivel" onPointerDown={saltear}>
@@ -194,60 +258,36 @@ export default function PantallaBalanza({ nivel, alVolver, alSiguiente, alAyuda 
         </button>
       </header>
 
-      <div className={`balanza${fase !== 'jugando' ? ' balanza--resuelta' : ''}`}>
+      <div
+        className={`balanza${resuelto ? ' balanza--resuelta' : ''}${tambaleo ? ' balanza--tambaleo' : ''}${cercaDeGanar ? ' balanza--cerca' : ''}`}
+      >
         <div className="balanza__platillos">
           {(['izquierda', 'derecha'] as const).map((lado) => (
-            <div key={lado} className="platillo">
-              {lados[lado].map((termino, i) => {
-                const quitable = jugada(lados, lado, i) !== null;
-                const clases = [
-                  'termino',
-                  termino.clase === 'incognita'
-                    ? 'termino--cofre'
-                    : termino.clase === 'numero'
-                      ? 'termino--numero'
-                      : 'termino--objeto',
-                  tambaleo === `${lado}-${i}` ? 'termino--tambaleo' : '',
-                  pulso && quitable ? 'termino--pulso' : '',
-                ]
-                  .filter(Boolean)
-                  .join(' ');
-                return (
-                  <button
-                    key={`${lado}-${i}`}
-                    type="button"
-                    className={clases}
-                    onPointerDown={(evento) => {
-                      evento.stopPropagation();
-                      tocarTermino(lado, i);
-                    }}
-                  >
-                    {termino.clase === 'objeto'
-                      ? termino.icono
-                      : termino.clase === 'numero'
-                        ? termino.valor
-                        : fase === 'jugando'
-                          ? '📦'
-                          : '🎁'}
-                  </button>
-                );
-              })}
+            <div
+              key={lado}
+              ref={lado === 'izquierda' ? refPlatilloIzq : refPlatilloDer}
+              className="platillo"
+            >
+              {lados[lado].map((termino, i) => (
+                <TerminoPieza
+                  key={`${lado}-${i}-${lados[lado].length}`}
+                  termino={termino}
+                  quitable={jugada(lados, lado, i) !== null}
+                  conPulso={pulso}
+                  abierto={resuelto && termino.clase === 'incognita'}
+                  alSoltar={(slotId) => soltarTermino(lado, i, slotId)}
+                  alEncajado={aplicarJugada}
+                />
+              ))}
             </div>
           ))}
         </div>
         <div className="balanza__viga" />
         <div className="balanza__base" />
+        {esTutorial && sinJugadas && !resuelto && <div className="mano-tutorial">👆</div>}
       </div>
 
-      {(fase === 'cosecha' || fase === 'comiendo') && (
-        <div className="cosecha" aria-hidden="true">
-          {[0, 1, 2, 3, 4].map((i) => (
-            <span key={i} className="cosecha__brote" style={{ animationDelay: `${i * 0.09}s` }}>
-              💎
-            </span>
-          ))}
-        </div>
-      )}
+      {(fase === 'cosecha' || fase === 'comiendo') && <Celebracion emoji="💎" />}
 
       {fase === 'final' && (
         <div className="nivel__final">

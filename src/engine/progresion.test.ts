@@ -49,17 +49,30 @@ describe('progresión', () => {
     expect(puedeJugar(niveles[2], niveles, progreso)).toBe(false); // mundo bloqueado
   });
 
-  it('completar un mundo desbloquea el siguiente y sube la etapa de la mascota', () => {
+  it('completar un mundo desbloquea el siguiente', () => {
     let progreso = progresoInicial();
     progreso = completarNivel(niveles, progreso, 'm1-n01', 3);
     expect(progreso.mundoDesbloqueado).toBe('multiplicacion');
-    expect(progreso.etapaMascota).toBe(0);
 
     progreso = completarNivel(niveles, progreso, 'm1-n02', 1);
     expect(mundoCompleto(niveles, 'multiplicacion', progreso)).toBe(true);
     expect(progreso.mundoDesbloqueado).toBe('division');
-    expect(calcularEtapaMascota(niveles, progreso)).toBe(1);
+  });
+
+  it('la mascota evoluciona por cantidad de niveles completados', () => {
+    const muchos = Array.from({ length: 20 }, (_, i) =>
+      nivelGrilla(`m1-x${i}`, 'multiplicacion'),
+    );
+    let progreso = progresoInicial();
+    for (let i = 0; i < 5; i++) progreso = completarNivel(muchos, progreso, `m1-x${i}`, 3);
+    expect(progreso.etapaMascota).toBe(0);
+
+    progreso = completarNivel(muchos, progreso, 'm1-x5', 1); // 6to nivel
+    expect(calcularEtapaMascota(progreso)).toBe(1);
     expect(progreso.etapaMascota).toBe(1);
+
+    for (let i = 6; i < 18; i++) progreso = completarNivel(muchos, progreso, `m1-x${i}`, 2);
+    expect(progreso.etapaMascota).toBe(2); // 18 niveles
   });
 
   it('rejugar conserva las mejores estrellas', () => {

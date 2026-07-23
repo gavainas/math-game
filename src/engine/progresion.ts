@@ -44,15 +44,13 @@ export function puedeJugar(nivel: Nivel, niveles: Nivel[], progreso: Progreso): 
   return siguienteNivel(niveles, progreso)?.id === nivel.id;
 }
 
-// Etapa de la mascota = mundos completos consecutivos (GAMEFEEL.md 5):
-// 1 al terminar M1, 2 al terminar M2, 3 al terminar M3, 4 al terminar M4.
-export function calcularEtapaMascota(niveles: Nivel[], progreso: Progreso): EtapaMascota {
-  let etapa = 0;
-  for (const mundo of ORDEN_MUNDOS) {
-    if (!mundoCompleto(niveles, mundo, progreso)) break;
-    etapa++;
-  }
-  return etapa as EtapaMascota;
+// La mascota evoluciona por niveles completados (GAMEFEEL.md 2), nunca por
+// estrellas, y la evolución es sorpresa: no se anuncia.
+export const UMBRALES_ETAPA = [6, 18, 34, 55] as const;
+
+export function calcularEtapaMascota(progreso: Progreso): EtapaMascota {
+  const completados = Object.keys(progreso.nivelesCompletados).length;
+  return UMBRALES_ETAPA.filter((umbral) => completados >= umbral).length as EtapaMascota;
 }
 
 function calcularDesbloqueo(niveles: Nivel[], progreso: Progreso): Mundo {
@@ -86,10 +84,7 @@ export function completarNivel(
       indiceMundo(desbloqueo) > indiceMundo(progreso.mundoDesbloqueado)
         ? desbloqueo
         : progreso.mundoDesbloqueado,
-    etapaMascota: Math.max(
-      progreso.etapaMascota,
-      calcularEtapaMascota(niveles, parcial),
-    ) as EtapaMascota,
+    etapaMascota: Math.max(progreso.etapaMascota, calcularEtapaMascota(parcial)) as EtapaMascota,
   };
 }
 

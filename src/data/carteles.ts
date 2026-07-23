@@ -55,18 +55,18 @@ export function explicacionDeNivel(nivel: Nivel): Explicacion {
     if (terminos.some((t) => t.clase === 'objeto')) {
       return {
         clave: 'balanza-objetos',
-        texto: 'Sacá lo mismo de los DOS lados. ¡Dejá el cofre solo!',
+        texto: 'Llevá al otro plato algo que esté en los DOS: ¡se van juntos! Dejá el cofre solo.',
       };
     }
     if (cofres > 1) {
       return {
         clave: 'balanza-cofres',
-        texto: 'Primero sacá los números sueltos. Cofres solos: tocalos y se reparten el número.',
+        texto: 'Primero sacá los números sueltos. Cofres solos: tocalos y se reparten lo del otro plato.',
       };
     }
     return {
       clave: 'balanza-numeros',
-      texto: 'Tocá un número y se resta del otro lado. ¡Dejá el cofre solo!',
+      texto: 'Llevá un número al otro plato: se resta. ¡Dejá el cofre solo!',
     };
   }
   return { clave: `otro-${nivel.tipo}`, texto: '¡Jugá y descubrí!' };

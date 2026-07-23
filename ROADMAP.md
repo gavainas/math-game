@@ -69,7 +69,18 @@ paso, el orden de sub-ítems es sugerido.
       combinadas (2x + 3 = 11) con la ecuación simplificándose en vivo.
       Se adelantó antes que Fracciones a pedido; el desbloqueo saltea los
       mundos no construidos.
+- [x] Balanza con drag al otro platillo (además del tap), tutorial con manito
+      en el primer nivel, hamacado/tambaleo, pop de números y responsive mobile.
 - [ ] Boss "El Cofre Final" + evolución final de la mascota (etapa 4).
+
+## Motor de deseo (GAMEFEEL.md 2)
+
+- [x] La cría de Benja: huevo que come la cosecha y evoluciona por sorpresa
+      según niveles completados (🥚→🐣→🐥→🐲→🐉, umbrales 6/18/34/55).
+- [x] Confetti y festejo al resolver en los 3 mundos.
+- [ ] Álbum de stickers por hitos + secretos escondidos por mundo.
+- [ ] Bosses: La Gran Cosecha, El Picnic Gigante, El Cofre Final.
+- [ ] Sandbox desbloqueable por mundo.
 
 ## Paso 7: Arte final + mascota (Higgsfield / Claude Design)
 
