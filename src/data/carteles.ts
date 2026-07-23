@@ -20,13 +20,13 @@ export function explicacionDeNivel(nivel: Nivel): Explicacion {
     if (objetivo.modo === 'total') {
       return {
         clave: 'grilla-total',
-        texto: 'Armá una grilla que tenga justo ese número. ¡Hay varias formas!',
+        texto: 'Armá UN rectángulo que tenga justo ese número. ¡Hay varias formas!',
       };
     }
     return caracteristicasNivel(nivel.id).campoLibre
       ? {
           clave: 'grilla-campo',
-          texto: 'Mirá la consigna de arriba: ¡plantá esos grupos tocando la tierra!',
+          texto: 'Mirá la consigna: ¡plantá esos grupos TODOS JUNTOS, armando un rectángulo!',
         }
       : { clave: 'grilla-slots', texto: '¡Arrastrá los brotes hasta los casilleros!' };
   }

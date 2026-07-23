@@ -281,6 +281,22 @@
   background: rgba(123, 200, 108, 0.12);
 }
 
+/* Aviso de Benja en vivo: la cantidad está bien pero falta la forma */
+.aviso-benja {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 16px;
+  background: rgba(255, 209, 102, 0.25);
+  border: 2px solid var(--ambar);
+  border-radius: 18px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--tierra);
+  max-width: 420px;
+  animation: aparecer 0.3s ease-out;
+}
+
 .tablero {
   display: grid;
   gap: 10px;

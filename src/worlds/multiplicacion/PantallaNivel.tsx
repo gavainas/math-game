@@ -248,6 +248,16 @@ export default function PantallaNivel({ nivel, alVolver, alSiguiente, alAyuda }:
   const plantadas = celdas.filter(Boolean).length;
   const primeraLibre = celdas.findIndex((llena) => !llena);
   const tamCelda = Math.min(56, Math.floor((modo === 'campo' ? 360 : 400) / columnas));
+
+  // La cantidad está bien pero no resuelve: o los brotes están desparramados
+  // (hay que juntarlos en un rectángulo) o el rectángulo tiene otra forma.
+  const rectanguloActual = modo === 'campo' ? estadoGrilla(celdas, columnas, true) : null;
+  const aviso =
+    modo === 'campo' && fase === 'jugando' && plantadas > 0 && plantadas === totalObjetivo
+      ? rectanguloActual && rectanguloActual.filas > 0
+        ? 'consigna'
+        : 'juntar'
+      : null;
   const consignaGrupos =
     objetivo.modo === 'armar' && !mostrarNotacion
       ? Array.from({ length: objetivo.filas }, (_, i) => i)
@@ -259,7 +269,9 @@ export default function PantallaNivel({ nivel, alVolver, alSiguiente, alAyuda }:
         <button type="button" className="boton-redondo" onClick={alVolver}>
           🗺️
         </button>
-        <div className={`nivel__consigna${pulso && modo !== 'slots' ? ' nivel__consigna--pulso' : ''}`}>
+        <div
+          className={`nivel__consigna${(pulso && modo !== 'slots') || aviso === 'consigna' ? ' nivel__consigna--pulso' : ''}`}
+        >
           {consignaGrupos && objetivo.modo === 'armar' && (
             <span className="paquetes">
               {consignaGrupos.map((i) => (
@@ -299,6 +311,17 @@ export default function PantallaNivel({ nivel, alVolver, alSiguiente, alAyuda }:
           <Benja expresion="piola" ancho={44} />
         </button>
       </header>
+
+      {aviso && (
+        <div className="aviso-benja">
+          <Benja expresion="sorpresa" ancho={42} />
+          <span>
+            {aviso === 'juntar'
+              ? '¡Todos juntos! Armá UN solo rectángulo.'
+              : 'Mirá la consigna: ¿cuántos grupos? ¿De cuántos cada uno?'}
+          </span>
+        </div>
+      )}
 
       <div
         className={`tablero${fase !== 'jugando' ? ' tablero--resuelto' : ''}${modo === 'campo' ? ' tablero--campo' : ''}`}

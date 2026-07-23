@@ -39,14 +39,13 @@ type Pantalla =
   | { vista: 'mapa'; mundo: Mundo }
   | { vista: 'nivel'; nivel: Nivel };
 
-// ?probar en la URL desbloquea todos los niveles para revisarlos (modo padre).
-const MODO_PRUEBA = new URLSearchParams(window.location.search).has('probar');
+// Pedido del autor: todos los capítulos y niveles quedan siempre
+// desbloqueados. Las estrellas y el progreso se siguen guardando igual.
+const MODO_PRUEBA = true;
 
 export default function App() {
   const [progreso, setProgreso] = useState<Progreso>(() => cargarProgreso());
-  const [pantalla, setPantalla] = useState<Pantalla>(() =>
-    cargarProgreso().introVista ? { vista: 'mundos' } : { vista: 'intro' },
-  );
+  const [pantalla, setPantalla] = useState<Pantalla>({ vista: 'intro' });
   const [cartel, setCartel] = useState<Explicacion | null>(null);
 
   const progresoRef = useRef(progreso);
