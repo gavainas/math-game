@@ -66,12 +66,12 @@ export function explicacionDeNivel(nivel: Nivel): Explicacion {
           }
         : {
             clave: 'corte-sombrear',
-            texto: 'Cortá igual que la pizza chiquita y tocá las porciones para servirlas.',
+            texto: 'Mirá el pedido: cortá igual y tocá las porciones para servirlas como él quiere.',
           };
     }
     return {
       clave: 'corte-cortar',
-      texto: 'Cortá la pizza igual que la chiquita: 🔪 corta una vez más, ↩️ deshace.',
+      texto: 'El cliente pide esa pizza: cortá la tuya igual. 🔪 corta, ↩️ deshace.',
     };
   }
   if (nivel.tipo === 'balanza') {

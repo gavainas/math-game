@@ -21,6 +21,13 @@ import { caracteristicasFracciones, opcionesFraccion } from '../../data/fraccion
 type FaseNivel = 'jugando' | 'cosecha' | 'comiendo' | 'final';
 
 const MAX_PARTES = 12;
+const CLIENTES = ['🐻', '🐰', '🦊', '🐶', '🐨', '🐷'];
+
+function clienteDe(nivelId: string): string {
+  let suma = 0;
+  for (const letra of nivelId) suma += letra.charCodeAt(0);
+  return CLIENTES[suma % CLIENTES.length];
+}
 
 // Pizza en SVG: `partes` porciones desde el centro; las servidas se pintan.
 function Pizza({
@@ -107,6 +114,7 @@ export default function PantallaPizza({ nivel, alVolver, alSiguiente, alAyuda }:
   const [servidas, setServidas] = useState<Set<number>>(new Set());
   const [respuesta, setRespuesta] = useState<number | null>(null);
   const [fase, setFase] = useState<FaseNivel>('jugando');
+  const [sinJugadas, setSinJugadas] = useState(true);
   const [estrellas, setEstrellas] = useState<Estrellas | null>(null);
 
   const espejoEstado = useRef({ partes, servidas, fase });
@@ -162,6 +170,7 @@ export default function PantallaPizza({ nivel, alVolver, alSiguiente, alAyuda }:
     const nuevas = Math.min(MAX_PARTES, Math.max(1, p + delta));
     if (nuevas === p) return;
     busJuego.emitir({ tipo: delta > 0 ? 'pieza_soltada_ok' : 'pieza_agarrada' });
+    setSinJugadas(false);
     avisarEstado(nuevas, new Set());
   };
 
@@ -217,19 +226,34 @@ export default function PantallaPizza({ nivel, alVolver, alSiguiente, alAyuda }:
           🗺️
         </button>
         <div className="nivel__consigna">
-          {objetivo.modo !== 'deCantidad' &&
-            (mostrarNotacion && objetivo.modo === 'sombrear' ? (
-              <span className="fraccion">
-                <span>{objetivo.sombreadas}</span>
-                <span className="fraccion__raya" />
-                <span>{objetivo.partes}</span>
+          {objetivo.modo !== 'deCantidad' && (
+            // El cliente pide su pizza en un globo: copiarla es la consigna.
+            // Cuando los cortes ya coinciden, el pedido se marca con un tilde.
+            <span className="pedido">
+              <span className="pedido__cliente">{clienteDe(nivel.id)}</span>
+              <span
+                className={`pedido__globo${partes === modeloPartes && fase === 'jugando' ? ' pedido__globo--cortes-listos' : ''}`}
+              >
+                {mostrarNotacion && objetivo.modo === 'sombrear' ? (
+                  <span className="fraccion">
+                    <span>{objetivo.sombreadas}</span>
+                    <span className="fraccion__raya" />
+                    <span>{objetivo.partes}</span>
+                  </span>
+                ) : (
+                  <Pizza
+                    partes={modeloPartes}
+                    servidas={modeloServidas}
+                    tam={82}
+                    alTocarPorcion={null}
+                  />
+                )}
+                {partes === modeloPartes && fase === 'jugando' && (
+                  <span className="pedido__tilde">✓</span>
+                )}
               </span>
-            ) : (
-              // El modelo chiquito: copiarlo es la consigna
-              <span className="modelo-pizza">
-                <Pizza partes={modeloPartes} servidas={modeloServidas} tam={72} alTocarPorcion={null} />
-              </span>
-            ))}
+            </span>
+          )}
           {objetivo.modo === 'deCantidad' && (
             <span className="nivel__notacion nivel__notacion--fraccion">
               <span className="fraccion">
@@ -281,7 +305,7 @@ export default function PantallaPizza({ nivel, alVolver, alSiguiente, alAyuda }:
             </button>
             <button
               type="button"
-              className="boton-redondo boton-redondo--principal cortes__cortar"
+              className={`boton-redondo boton-redondo--principal cortes__cortar${sinJugadas ? ' cortes__cortar--pulso' : ''}`}
               onPointerDown={(e) => e.stopPropagation()}
               onClick={() => cambiarCortes(1)}
             >

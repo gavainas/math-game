@@ -1285,3 +1285,62 @@ body.fondo--fracciones {
     radial-gradient(circle at 80% 4%, rgba(240, 144, 74, 0.18), transparent 32%),
     linear-gradient(#fdf8e4, #f8ecc0) fixed;
 }
+
+/* El pedido del cliente: animalito con su globo mostrando la pizza que quiere */
+.pedido {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pedido__cliente {
+  font-size: 2.4rem;
+  line-height: 1;
+}
+
+.pedido__globo {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  min-width: 96px;
+  min-height: 96px;
+  padding: 8px;
+  background: #fff;
+  border: 3px solid var(--borde);
+  border-radius: 20px;
+  box-shadow: 0 4px 10px rgba(91, 74, 63, 0.14);
+}
+
+.pedido__globo::before {
+  content: '';
+  position: absolute;
+  left: -12px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 8px solid transparent;
+  border-right-color: #fff;
+  border-left: none;
+}
+
+.pedido__globo--cortes-listos {
+  border-color: var(--verde);
+}
+
+.pedido__tilde {
+  position: absolute;
+  right: -10px;
+  top: -10px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--verde);
+  color: #fff;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+  animation: brotar 0.25s ease-out;
+}
+
+.cortes__cortar--pulso {
+  animation: latido 1.3s ease-in-out infinite;
+}
